@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmer_app/screens/chatscreen/chatscreen.dart';
 import 'package:farmer_app/screens/myadscren/addadscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,14 +18,25 @@ class AdDetailScreen extends StatefulWidget {
 class _AdDetailScreenState extends State<AdDetailScreen> {
   final String _keyData, _tempoData;
   _AdDetailScreenState(this._keyData, this._tempoData);
-  String _userId;
+  String _userId, _userUID;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     print(_keyData);
+    getUserId();
   }
+
+  void getUserId() async {
+    User user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      _userUID = user.uid;
+      print( " user id " + _userUID);
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,7 +160,7 @@ class _AdDetailScreenState extends State<AdDetailScreen> {
               ),
             ),
           ),
-        ) : Row(
+        ) : Row (
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(child: RaisedButton(onPressed: () async {
@@ -169,7 +182,16 @@ class _AdDetailScreenState extends State<AdDetailScreen> {
               width: 10,
             ),
             Expanded(child: RaisedButton(onPressed: () {
-
+              if(_userUID == _userId) {
+                ScaffoldMessenger
+                    .of(context)
+                    .showSnackBar(SnackBar(content: Text('You can\'t chat yourself .')));
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen(receiverUid: _userId,)),
+                );
+              }
             },child: Text("Chat"),color: Colors.green,textColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)

@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:farmer_app/screens/chatscreen/usermessagescreen.dart';
 import 'package:farmer_app/screens/homescreen/homescreen.dart';
+import 'package:farmer_app/screens/myadscren/addadscreen.dart';
 import 'package:farmer_app/screens/myadscren/myadscreen.dart';
 import 'package:farmer_app/screens/profilescreen/profilescreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreenBottomNavigator extends StatefulWidget {
   @override
@@ -13,6 +16,7 @@ class HomeScreenBottomNavigator extends StatefulWidget {
 
 class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
   int bottomSelectedIndex = 0;
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -51,6 +55,7 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
       children: <Widget>[
         HomeScreen(),
         MyAdScreen(),
+        UserMessageScreen(),
         ProfileScreen()
       ],
     );
@@ -86,6 +91,8 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
             actions: [
               IconButton(icon: Icon(Icons.logout), onPressed: () async {
                 await FirebaseAuth.instance.signOut();
+                await googleSignIn.disconnect();
+                await googleSignIn.signOut();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/LoginScreen', (Route<dynamic> route) => false);
                 ScaffoldMessenger
@@ -99,7 +106,10 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
             maintainBottomViewPadding: true,
               child: buildPageView(),
           ),
-          bottomNavigationBar:  BottomNavigationBar(
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.green,
+            fixedColor: Colors.white,
+            type: BottomNavigationBarType.fixed,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -107,7 +117,11 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.ad_units),
-                label: 'My Ad',
+                label: 'My Ad\'s',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.message_rounded),
+                label: 'Messages',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
@@ -119,6 +133,23 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
               bottomTapped(index);
             },
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: new Container(
+              margin: EdgeInsets.symmetric(vertical: 35),
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddAdScreen()),
+                  );
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                // elevation: 5.0,
+              ),
+            ),
         ),
         onWillPop: _onWillPop
     );
