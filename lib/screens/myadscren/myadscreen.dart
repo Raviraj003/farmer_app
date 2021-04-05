@@ -49,11 +49,14 @@ class _MyAdScreenState extends State<MyAdScreen> {
                 ) : GridView.builder(
                   shrinkWrap: true,
                   primary: false,
-                  padding: EdgeInsets.all(20.0),
+                  physics: const ClampingScrollPhysics(),
+                  addRepaintBoundaries: true,
+                  padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 2),
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 4,
+                    crossAxisCount: 2,
+
                   ),
                   itemCount: documentsData.length,
                   itemBuilder: (context , index) {
@@ -65,39 +68,46 @@ class _MyAdScreenState extends State<MyAdScreen> {
                           MaterialPageRoute(builder: (context) => AdDetailScreen(keyData: documentsData[index]['title'], tempoData: 'updateAd',)),
                         );
                       },
-                      child: Card(
-                        elevation: 6.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        margin: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            new Image.network(documentsData[index]['image1'],
-                              fit: BoxFit.fill,
-                              width: double.infinity,
-                              height: 250,
-                            ),
-                            new Padding(padding: EdgeInsets.symmetric(horizontal: 10),
-                              child:  new Text(documentsData[index]['title'],
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),),
-                            ),
-                            new Padding(padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: new Text(documentsData[index]['price'],
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 20,
-                                ),),
-                            ),
-                            new SizedBox()
-                          ],
+                      child: AnimatedContainer(
+                        duration: Duration(seconds: 2),
+                        curve: Curves.bounceIn,
+                        child: Card(
+                          elevation: 6.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          margin: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 18.0 / 12.0,
+                                child: Image.network(
+                                  documentsData[index]['image1'],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              // r
+                              new Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                                child:  new Text(documentsData[index]['title'],
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),),
+                              ),
+                              new Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: new Text(documentsData[index]['price'],
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 14,
+                                  ),),
+                              ),
+                              new SizedBox()
+                            ],
+                          ),
                         ),
                       ),
                     );

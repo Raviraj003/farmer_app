@@ -4,15 +4,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_app/models/message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'imagefullscreen.dart';
-
 class ChatScreen extends StatefulWidget {
-  final String receiverUid;
-  ChatScreen({@required this.receiverUid});
+  final String receiverUid, reciverName;
+  ChatScreen({@required this.receiverUid,@required this.reciverName});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -29,7 +26,6 @@ class _ChatScreenState extends State<ChatScreen> {
   String receiverPhotoUrl, senderPhotoUrl, receiverName, senderName;
   StreamSubscription<DocumentSnapshot> subscription;
   File imageFile;
-  FirebaseStorage _storageReference;
   TextEditingController _messageController;
 
   Future<User> getUID() async {
@@ -54,17 +50,17 @@ class _ChatScreenState extends State<ChatScreen> {
     // TODO: implement initState
     super.initState();
     _messageController = TextEditingController();
-    getUID().then((user) {
+    getUID().then((user) async {
       setState(() {
         _senderuid = user.uid;
         print("sender uid : $_senderuid");
-        getSenderPhotoUrl(_senderuid).then((snapshot) {
+         getSenderPhotoUrl(_senderuid).then((snapshot) {
           setState(() {
             senderPhotoUrl = snapshot['photoUrl'];
-            senderName = snapshot['name'];
+            print(senderName + " " + senderPhotoUrl);
           });
         });
-        getReceiverPhotoUrl(widget.receiverUid).then((snapshot) {
+         getReceiverPhotoUrl(widget.receiverUid).then((snapshot) {
           setState(() {
             receiverPhotoUrl = snapshot['photoUrl'];
             receiverName = snapshot['name'];
@@ -110,7 +106,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
         appBar: AppBar(
-          title: senderName == null || senderName == "" ? Text("Farmer App"): Text(senderName),
+          title: widget.reciverName == null || widget.reciverName == "" ? Text("Farmer App"): Text(widget.reciverName),
         ),
         body: Form(
           key: _formKey,
@@ -201,8 +197,7 @@ class _ChatScreenState extends State<ChatScreen> {
         receiverUid: widget.receiverUid,
         senderUid: _senderuid,
         message: text,
-        timestamp: FieldValue.serverTimestamp(),
-        type: 'text');
+        timestamp: FieldValue.serverTimestamp(),);
     print(
         "receiverUid: ${widget.receiverUid} , senderUid : $_senderuid , message: $text");
     print(
@@ -249,69 +244,61 @@ class _ChatScreenState extends State<ChatScreen> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: snapshot['senderUid'] == _senderuid?
-            MainAxisAlignment.end : MainAxisAlignment.start,
-            children: <Widget>[
-              snapshot['senderUid'] == _senderuid
-                  ? CircleAvatar(
-                backgroundImage: senderPhotoUrl == null
-                    ? NetworkImage('https://img.icons8.com/officel/2x/person-male.png')
-                    : NetworkImage(senderPhotoUrl),
-                radius: 20.0,
-              )
-                  : CircleAvatar(
-                backgroundImage: receiverPhotoUrl == null
-                    ? NetworkImage('https://img.icons8.com/officel/2x/person-male.png')
-                    : NetworkImage(receiverPhotoUrl),
-                radius: 20.0,
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  snapshot['senderUid'] == _senderuid
-                      ? new Text(
-                    senderName == null ? "" : senderName,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold),
-                  )
-                      : new Text(
-                    receiverName == null ? "" : receiverName,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  snapshot['type'] == 'text'
-                      ? new Text(
-                    snapshot['message'],
-                    style: TextStyle(color: Colors.black, fontSize: 14.0),
-                  )
-                      : InkWell(
-                    onTap: (() {
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => FullScreenImage(photoUrl: snapshot['photoUrl'],)));
-                    }),
-                    child: Hero(
-                      tag: snapshot['photoUrl'],
-                      child: FadeInImage(
-                        image: NetworkImage(snapshot['photoUrl']),
-                        placeholder: AssetImage('assets/blankimage.png'),
-                        width: 200.0,
-                        height: 200.0,
+          child: AnimatedContainer(
+            duration: Duration(seconds: 1),
+            curve: Curves.bounceIn,
+            child: Row(
+              mainAxisAlignment: snapshot['senderUid'] == _senderuid ?
+              MainAxisAlignment.end : MainAxisAlignment.start,
+              children: <Widget>[
+                snapshot['senderUid'] == _senderuid
+                    ? CircleAvatar(
+                  backgroundImage: senderPhotoUrl == null
+                      ? NetworkImage('https://img.icons8.com/officel/2x/person-male.png')
+                      : NetworkImage(senderPhotoUrl),
+                  radius: 20.0,
+                )
+                    : CircleAvatar(
+                  backgroundImage: receiverPhotoUrl == null
+                      ? NetworkImage('https://img.icons8.com/officel/2x/person-male.png')
+                      : NetworkImage(receiverPhotoUrl),
+                  radius: 20.0,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Card(
+                    elevation: 4.0,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          snapshot['senderUid'] == _senderuid
+                              ? new Text(
+                            senderName == null ? "" : senderName,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold),
+                          )
+                              : new Text(
+                            widget.reciverName == null ? "" : widget.reciverName,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          new Text(
+                            snapshot['message'],
+                            style: TextStyle(color: Colors.black, fontSize: 14.0),
+                          )
+                        ],
                       ),
-                    ),
-                  )
-                ],
-              )
-            ],
+                    )
+                )
+              ],
+            ),
           ),
         ),
       ],

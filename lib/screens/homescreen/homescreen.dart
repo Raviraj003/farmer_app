@@ -1,6 +1,7 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmer_app/screens/myadscren/addetailscreen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,67 +23,74 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.transparent,
         body: SafeArea(
-      bottom: true,
-      maintainBottomViewPadding: true,
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('adDetails').snapshots(),
-        builder: (context, stream) {
-          if (stream.connectionState == ConnectionState.done) {
-            return Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 20,
-            );
-          }
-          if (stream.hasData) {
-            final List<DocumentSnapshot> documents = stream.data.docs;
-            final List documentsData = documents.where((element) =>
-                element['location'].toString().toLowerCase().contains(_searchController.text.toLowerCase()) ||
-                    element['title'].toString().toLowerCase().contains(_searchController.text.toLowerCase())
-            ).toList();
+        bottom: true,
+        maintainBottomViewPadding: true,
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('adDetails').snapshots(),
+            builder: (context, stream) {
+            if (stream.connectionState == ConnectionState.done) {
+              return Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 20,
+              );
+            }
+            if (stream.hasData) {
+              final List<DocumentSnapshot> documents = stream.data.docs;
+              final List documentsData = documents.where((element) =>
+                  element['location'].toString().toLowerCase().contains(_searchController.text.toLowerCase()) ||
+                      element['title'].toString().toLowerCase().contains(_searchController.text.toLowerCase())
+              ).toList();
             //print("\n Data : " + documents[0]['title']);
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 new Container(
-                  //color: Colors.green,
+                  color: Colors.green,
                   padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                  child: TextFormField(
-                    controller: _searchController,
-                    focusNode: focusNode,
-                    onChanged: (value) {
-                      setState(() {
-                        // if(_searchController.text.isEmpty) {
-                        //   FocusScope.of(context).unfocus();
-                        // }
-                        _searchController.text = value;
-                        _searchController.selection = TextSelection.fromPosition(TextPosition(offset: _searchController.text.length));
-                      });
-                      debugPrint(_searchController.text);
-                    },
-                    decoration: InputDecoration(
-                        fillColor: Colors.white70,
-                        border: new OutlineInputBorder(
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(10.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    elevation: 8.0,
+                    child: TextFormField(
+                      controller: _searchController,
+                      focusNode: focusNode,
+                      onChanged: (value) {
+                        setState(() {
+                          // if(_searchController.text.isEmpty) {
+                          //   FocusScope.of(context).unfocus();
+                          // }
+                          _searchController.text = value;
+                          _searchController.selection = TextSelection.fromPosition(TextPosition(offset: _searchController.text.length));
+                        });
+                        debugPrint(_searchController.text);
+                      },
+                      decoration: InputDecoration(
+                          fillColor: Colors.transparent,
+                          border: new OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
                           ),
-                        ),
-                        hintText: ' Search by title & location Here',
-                        filled: true,
-                        suffixIcon: _searchController.text.isEmpty ? IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              debugPrint('search');
-                            }) : IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              debugPrint('222');
-                              setState(() {
-                                FocusScope.of(context).unfocus();
-                                _searchController.clear();
-                              });
-                            })
+                          hintText: ' Search by title & location Here',
+                          filled: true,
+                          suffixIcon: _searchController.text.isEmpty ? IconButton(
+                              icon: Icon(Icons.search),
+                              onPressed: () {
+                                debugPrint('search');
+                              }) : IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                debugPrint('222');
+                                setState(() {
+                                  FocusScope.of(context).unfocus();
+                                  _searchController.clear();
+                                });
+                              })
+                      ),
                     ),
                   ),
                 ),
@@ -91,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     primary: false,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                     mainAxisSpacing: 2,
                     crossAxisSpacing: 4,
                     crossAxisCount: 2,
@@ -125,11 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            // new Image.network(
-                            //   doc['image1'],
-                            //   fit: BoxFit.cover,
-                            //   width: double.infinity,
-                            //   height: 120,
+                            // new AspectRatio(aspectRatio: 18.0 / 12.0,
+                            //   child: Image(image: NetworkImage( doc['image1']),
+                            //     fit: BoxFit.cover,
+                            //   ),
                             // ),
                             new Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),

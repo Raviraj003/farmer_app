@@ -39,6 +39,9 @@ class _IntroScreen extends State<IntroScreen>{
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.blue),
+    );
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,

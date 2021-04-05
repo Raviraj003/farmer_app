@@ -55,7 +55,7 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
       children: <Widget>[
         HomeScreen(),
         MyAdScreen(),
-        UserMessageScreen(),
+        UserMessageScreen(forShowAppBar: "",),
         ProfileScreen()
       ],
     );
@@ -91,7 +91,7 @@ class _HomeScreenBottomNavigatorState extends State<HomeScreenBottomNavigator> {
             actions: [
               IconButton(icon: Icon(Icons.logout), onPressed: () async {
                 await FirebaseAuth.instance.signOut();
-                await googleSignIn.disconnect();
+               // await googleSignIn.disconnect();
                 await googleSignIn.signOut();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/LoginScreen', (Route<dynamic> route) => false);

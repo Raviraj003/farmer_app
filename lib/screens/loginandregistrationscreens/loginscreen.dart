@@ -39,10 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.green),
+    );
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Center(
+        resizeToAvoidBottomInset: true,
+        body: SingleChildScrollView(
           child: Stack(
             children: <Widget>[
               ListView(
@@ -215,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     "uid": result.uid,
                                     "name": result.displayName,
                                     "email": result.email,
-                                    "phoneNo": null,
+                                    "phoneNo": result.phoneNumber,
                                     "address": null
                                   }).then((result) async {
                                     Navigator.of(context).pushReplacementNamed("/HomeScreenBottomNavigator");

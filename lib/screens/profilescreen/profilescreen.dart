@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
@@ -125,6 +126,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                      });
                    },
                    keyboardType: TextInputType.phone,
+                   inputFormatters:[
+                     LengthLimitingTextInputFormatter(10),
+                   ],
                    controller: _phoneController,
                    decoration: InputDecoration(
                        labelText: 'PHONE NUMBER',
@@ -197,77 +201,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
     profileUpdateFunction(BuildContext context) async {
-    try {
-       User user = FirebaseAuth.instance.currentUser;
-       if(_profileImage != null) {
-         String filename = basename(_profileImage.path);
-         print("file path" + filename);
-         Reference firebaseStorageRef =
-         FirebaseStorage.instance.ref().child('uploads/$filename');
-         print(firebaseStorageRef.toString());
-         final UploadTask uploadTask = firebaseStorageRef.putFile(_profileImage);
-         final TaskSnapshot downloadURL = (await uploadTask);
-         final String url = await downloadURL.ref.getDownloadURL();
-         print(url);
-         FirebaseFirestore.instance.collection("users")
-             .doc(user.uid)
-             .update({
-           "name": _name,
-           "phoneNo": _phoneNo,
-           "address": _address,
-           "photoUrl": url
-         }).then((result) {
-           print("Done");
-           setState(() {
-             _submitLoaderButton = false;
-           });
-           ScaffoldMessenger
-               .of(context)
-               .showSnackBar(SnackBar(content: Text('Profile Update Successfully.')));
-         }).catchError((error){
-           print(error.toString());
-           setState(() {
-             _submitLoaderButton = false;
-           });
-           ScaffoldMessenger
-               .of(context)
-               .showSnackBar(SnackBar(content: Text('Error while updating , Plz Try Again.')));
-         });
-       } else {
-         FirebaseFirestore.instance.collection("users")
-             .doc(user.uid)
-             .update({
-           "name": _name,
-           "phoneNo": _phoneNo,
-           "address": _address,
-         }).then((result) {
-           print("Done");
-           setState(() {
-             _submitLoaderButton = false;
-           });
-           ScaffoldMessenger
-               .of(context)
-               .showSnackBar(
-               SnackBar(content: Text('Profile Update Successfully.')));
-         }).catchError((error) {
-           print(error.toString());
-           setState(() {
-             _submitLoaderButton = false;
-           });
-           ScaffoldMessenger
-               .of(context)
-               .showSnackBar(SnackBar(
-               content: Text('Error while updating , Plz Try Again.')));
-         });
-       }
-    }catch(e) {
-      print(e);
-      setState(() {
-        _submitLoaderButton = false;
-      });
+    String _phone = "";
+    if(_phoneNo.length == 10){
+      try {
+        User user = FirebaseAuth.instance.currentUser;
+        if(_profileImage != null) {
+          String filename = basename(_profileImage.path);
+          print("file path" + filename);
+          Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('uploads/$filename');
+          print(firebaseStorageRef.toString());
+          final UploadTask uploadTask = firebaseStorageRef.putFile(_profileImage);
+          final TaskSnapshot downloadURL = (await uploadTask);
+          final String url = await downloadURL.ref.getDownloadURL();
+          print(url);
+          FirebaseFirestore.instance.collection("users")
+              .doc(user.uid)
+              .update({
+            "name": _name,
+            "phoneNo": _phoneNo,
+            "address": _address,
+            "photoUrl": url
+          }).then((result) {
+            print("Done");
+            setState(() {
+              _submitLoaderButton = false;
+            });
+            ScaffoldMessenger
+                .of(context)
+                .showSnackBar(SnackBar(content: Text('Profile Update Successfully.')));
+          }).catchError((error){
+            print(error.toString());
+            setState(() {
+              _submitLoaderButton = false;
+            });
+            ScaffoldMessenger
+                .of(context)
+                .showSnackBar(SnackBar(content: Text('Error while updating , Plz Try Again.')));
+          });
+        } else {
+          FirebaseFirestore.instance.collection("users")
+              .doc(user.uid)
+              .update({
+            "name": _name,
+            "phoneNo": _phoneNo,
+            "address": _address,
+          }).then((result) {
+            print("Done");
+            setState(() {
+              _submitLoaderButton = false;
+            });
+            ScaffoldMessenger
+                .of(context)
+                .showSnackBar(
+                SnackBar(content: Text('Profile Update Successfully.')));
+          }).catchError((error) {
+            print(error.toString());
+            setState(() {
+              _submitLoaderButton = false;
+            });
+            ScaffoldMessenger
+                .of(context)
+                .showSnackBar(SnackBar(
+                content: Text('Error while updating , Plz Try Again.')));
+          });
+        }
+      }catch(e) {
+        print(e);
+        setState(() {
+          _submitLoaderButton = false;
+        });
+        ScaffoldMessenger
+            .of(context)
+            .showSnackBar(SnackBar(content: Text('Error while updating , Plz Try Again.')));
+      }
+    } else {
       ScaffoldMessenger
           .of(context)
-          .showSnackBar(SnackBar(content: Text('Error while updating , Plz Try Again.')));
+          .showSnackBar(SnackBar(content: Text('Phone number must 10 digit')));
     }
   }
 }

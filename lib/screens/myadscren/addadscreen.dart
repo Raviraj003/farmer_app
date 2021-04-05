@@ -335,7 +335,8 @@ class _AddAdScreenState extends State<AddAdScreen> {
       } else {
         if(_title == "" || _title == null && _description == "" || _description == null &&
         _price == "" || _price == null && _location == "" || _location == null &&
-            _image1 == null && _image2 == null && _image3 == null) {
+            _image1.path == null ||  _image1.path == "" && _image2.path == null || _image2.path == ""
+            && _image3.path == null || _image3.path == "") {
           setState(() {
             _submitLoaderButton = false;
           });

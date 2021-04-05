@@ -13,27 +13,11 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>  with SingleTickerProviderStateMixin{
+class _SplashScreenState extends State<SplashScreen>  with SingleTickerProviderStateMixin {
   startTime() async {
     var _duration = new Duration(seconds: 6);
     return new Timer(_duration, checkFirstSeen);
   }
-
-  //sharedPreferences start (getting token)
-  // _fetchSessionAndNavigate() async{
-  //   await getToken().then((value){
-  //     print(value);
-  //     print(value);
-  //     setState(() {
-  //       if(value != null) {
-  //         Navigator.of(context).pushReplacementNamed("/HomeDrawerScreen");
-  //       } else {
-  //         Navigator.of(context).pushReplacementNamed("/LoginScreen");
-  //       }
-  //     });
-  //   });
-  //
-  // }
 
   _fetchSessionAndNavigate() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -72,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>  with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.white));
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return Scaffold(
       backgroundColor: Colors.deepOrangeAccent,
       body: Stack(
