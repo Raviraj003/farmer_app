@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "58717099239",
+    "firebase_url": "https://farmer-buy-sell-project-default-rtdb.firebaseio.com",
+    "project_id": "farmer-buy-sell-project",
+    "storage_bucket": "farmer-buy-sell-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58717099239:android:f751fe0ca86fe355f57e42",
+        "android_client_info": {
+          "package_name": "com.rj.farmer_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58717099239-rlc7kjtb7dqvc5ppr7p6k5j8nhnnachn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rj.farmer_app",
+            "certificate_hash": "a0f441d8f9187be1cbbacb75e31f75f426db7b98"
+          }
+        },
+        {
+          "client_id": "58717099239-u5cnspp2js2saeq9p9prmm5vhqf3b3j8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rj.farmer_app",
+            "certificate_hash": "e01a4e8dabdeb48b8a2d0fa1a63fafc6835f9264"
+          }
+        },
+        {
+          "client_id": "58717099239-8f0e7t97p349en70bs013q7dj5e8ml8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr0w61x5iVxsElRoh_eI9Q2O0GFy68G4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58717099239-8f0e7t97p349en70bs013q7dj5e8ml8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
